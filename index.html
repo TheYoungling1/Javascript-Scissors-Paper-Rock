@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="stylesheet.css">
+<body>
+    <div class="header">Scissors Paper Rock</div>
+    <div class="sub_header">First to 5 wins</div>
+    <div class="player_icons">
+        <div class="name">
+            <a>You</a>
+            <img src="https://static.thenounproject.com/png/2062361-200.png">
+            <div class="score" id="player_score">0</div>
+        </div>
+        <div class="name">
+            <a>AI</a>
+            <img src="https://cdn-icons-png.freepik.com/512/1966/1966523.png">
+            <div class="score" id="computer_score">0</div>
+        </div>
+    </div>
+    <div class="win_message" id="win_message">Let's Get The Game Started!!!</div>
+    <div class="selection">
+        <button class="player-choices" id="scissor">✌️</button>
+        <button class="player-choices" id="paper">🖐️</button>
+        <button class="player-choices" id="rock">👊</button>
+    </div>
+
+    <script>
+        const playerChoices = document.querySelectorAll(".player-choices");
+        const compScore = document.getElementById("computer_score");
+        const userScore = document.getElementById("player_score");
+        const winMessage = document.getElementById("win_message");
+        const options = ["rock", "paper", "scissors"];
+
+        // Computer randomly generates an index between 0 and 2
+        function getComputerChoice() {
+            const index = Math.floor(Math.random() * 3);
+            return options[index];
+        }
+
+        // Determine who wins 
+        function playRound(humanSelection, computerSelection) {
+            if (
+                (humanSelection === "rock" && computerSelection === "scissors") ||
+                (humanSelection === "paper" && computerSelection === "rock") ||
+                (humanSelection === "scissors" && computerSelection === "paper")
+            ) {
+                return "You Win! " + humanSelection + " beats " + computerSelection + "."
+                + "\n" + "You: " + humanSelection + ", AI: " + computerSelection; 
+            }
+
+            if (humanSelection === computerSelection) {
+                return "It's a tie!" + "." 
+                + "\n" + "You: " + humanSelection + ", AI: " + computerSelection; ;
+            }
+            else {
+                return "You Lose! " + computerSelection + " beats " + humanSelection + "." 
+                + "\n" + "You: " + humanSelection + ", AI: " + computerSelection;
+            }
+        }
+
+        // Stops the user from entering new inputs, essentially ends the game
+        function disableChoices() {
+                playerChoices.forEach(function(choice) {
+                    choice.disabled = true;
+                });
+        }
+
+        // Main game logic
+        function playGame(playerChoice) {
+            // Get the computer choice
+            const computerChoice = getComputerChoice();
+            
+            // Compare it with the player's and return win message
+            const result = playRound(playerChoice, computerChoice);
+
+            // Output the win message onto html
+            winMessage.textContent = result;
+
+            // Updating the score depending on who won
+            if (result.includes("You Win!")) {
+                userScore.textContent = parseInt(userScore.textContent) + 1;
+            } else if (result.includes("You Lose!")) {
+                compScore.textContent = parseInt(compScore.textContent) + 1;
+            }
+            
+
+            // Check if either player has reached a score of 5
+            if (parseInt(userScore.textContent) >= 5) {
+                winMessage.textContent = "You Win the Game!!!";
+                disableChoices();
+            } else if (parseInt(compScore.textContent) >= 5) {
+                winMessage.textContent = "The AI Wins the Game!!!";
+                disableChoices();
+            }
+            
+        }
+
+        // Player makes a choice, loops the main game logic function
+        playerChoices.forEach(function(choice) {
+            choice.addEventListener("click", function() {
+                // Calls the main game logic if the any of the three button is clicked
+                playGame(choice.id);
+            });
+        });
+
+    </script>
+</body>
+
+</html>
